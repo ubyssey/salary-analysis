@@ -16,7 +16,17 @@ module.exports = (grunt) ->
                 src: ["*.coffee"]
                 dest: "app/"
                 ext: ".js"
+        watch:
+            coffee:
+                files: ["app/*.coffee"]
+                tasks: ["coffee:build"]
+            jade:
+                files: ["app/*.jade"]
+                tasks: ["jade:build"]
     )
     
     grunt.loadNpmTasks "grunt-contrib-jade"
     grunt.loadNpmTasks "grunt-contrib-coffee"
+    grunt.loadNpmTasks "grunt-contrib-watch"
+    
+    grunt.registerTask "build", ["jade:build", "coffee:build"]
