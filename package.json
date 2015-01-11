@@ -1,0 +1,10 @@
+{
+  "name": "ubc-salaries-dept-reports",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-coffee": "^0.12.0",
+    "grunt-contrib-jade": "^0.14.0"
+  }
+}
