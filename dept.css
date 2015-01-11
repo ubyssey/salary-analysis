@@ -1,0 +1,58 @@
+body {
+    font: 10px Helvetica, sans-serif;
+    margin: 0 auto;
+    padding: 20px 30px;
+    
+    width: 1100px;
+}
+.chart {
+    margin-bottom: 50px;
+    margin-top: 30px;
+}
+.chart h2 {
+    text-align: center;
+    color: #444;
+}
+
+
+
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+
+.dot {
+    fill: lightblue;
+}
+
+.dot:hover {
+    fill: darkblue;
+}
+
+/* http://bl.ocks.org/Caged/6476579 */
+.d3-tip {
+    pointer-events:none;
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+
+    max-width: 400px;
+    max-height: 300px;
+}
+.d3-tip {
+    font-size: 11px;
+}
+.d3-tip span {
+    color: #999;
+}
+
+.reference-line {
+    stroke: #999;
+    shape-rendering: crispEdges;
+}
