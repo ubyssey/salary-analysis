@@ -1,21 +1,49 @@
 
-search = (q) ->
-    
-    d3.selectAll ".dot"
+debug = true
+if not debug
+    console.log = ->
+
+
+# Dict of test predicates to apply to charts
+predicates = {}
+
+_search = ->
+    results = d3.selectAll ".dot"
         .classed "searchresult", false
     
-    if q is ""
+    if Object.keys(predicates).length is 0
         return
     
-    q = q.trim().toLowerCase()
-    
-    results = d3.selectAll ".dot"
-        .filter (d, i) ->
-            -1 < d.dept_name.toLowerCase().indexOf q
+    results = results.filter (d) ->
+        for own key, p of predicates
+            if p and not p d
+                return false
+        true
     
     results.classed "searchresult", true
-    
     console.log results
+
+
+faculty_search = (evt) ->
+    fid = $(evt.currentTarget).val().split("fac")[1]
+    
+    if fid is "0"
+        delete predicates.fac
+    else
+        predicates.fac = (d, i) ->
+            d.faculty_id is fid
+    _search()
+
+
+search = (q) ->
+    q = q.trim().toLowerCase()
+        
+    if q is ""
+        delete predicates.q
+    else
+        predicates.q = (d, i) ->
+            -1 < d.dept_name.toLowerCase().indexOf q
+    _search()
 
 searchWrapper = (evt) ->
     q = $(evt.currentTarget).find(".searchbar").val()
@@ -27,11 +55,20 @@ searchWrapper = (evt) ->
 
 
 
+
+data_hooks = []
+
+fetch_data = (loader, uri, processor) ->
+    loader uri, (err, data) ->
+        data = processor data
+        f err, data for f in data_hooks
+
 chart_maker = (params) ->
     
     params.dataloader ?= (f) ->
         # f looks like (err, data) -> dosomething
         d3.csv "departments.csv", f
+        data_hooks.push 
     
     fmt_dollars = d3.format "$,.0f"
     apply_fmt = (xy, axis) ->
@@ -90,7 +127,7 @@ chart_maker = (params) ->
             .html params.tip
         svg.call tip
         
-        params.dataloader (err, data) ->
+        data_hooks.push (err, data) ->
             x.domain d3.extent data, params.d_x
             y.domain d3.extent data, params.d_y
         
@@ -135,11 +172,6 @@ chart_maker = (params) ->
                 .on "mouseover", tip.show
                 .on "mouseout", tip.hide
 
-###
-Todo: Differentiate dots (colour) by campus or faculty, provide
-      filters to show only certain facs.
-###
-
 
 dept_tip = (d) -> "#{d.dept_name} <span>- ID##{d.dept_id}</span"
 
@@ -168,6 +200,21 @@ draw_salary_expenses_chart = chart_maker(
     tip: dept_tip
 )
 
+fetch_data d3.csv, "departments.csv", (data) ->
+    d3.csv "faculties_list.csv", (err, data) ->
+        f = $("#facultyselector")
+        
+        data.unshift
+            faculty_name: "(All Faculties)"
+            faculty_id: 0
+        
+        ($("<option/>")
+                .attr "value", "fac#{d.faculty_id}"
+                .text d.faculty_name
+                .appendTo f) for d in data
+    
+    data
+    #todo +d....
 
 draw_gender_salary_chart "#deptchart"
 draw_salary_expenses_chart "#expenseschart"
@@ -175,3 +222,6 @@ draw_salary_expenses_chart "#expenseschart"
 $("#searchform")
     .keyup searchWrapper
     .submit searchWrapper
+
+$("#facultyselector")
+    .change faculty_search
