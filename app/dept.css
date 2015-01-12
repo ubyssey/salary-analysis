@@ -72,3 +72,9 @@ body {
     stroke: #999;
     shape-rendering: crispEdges;
 }
+
+
+
+.hidden {
+    display: none;
+}

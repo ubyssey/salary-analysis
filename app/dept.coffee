@@ -14,9 +14,9 @@ _search = ->
     if Object.keys(predicates).length is 0
         return
     
-    results = results.filter (d) ->
+    results = results.filter (d, i) ->
         for own key, p of predicates
-            if p and not p d
+            if p and not p d, i
                 return false
         true
     
@@ -33,6 +33,16 @@ faculty_search = (evt) ->
         predicates.fac = (d, i) ->
             d.faculty_id is fid
     _search()
+
+
+campus_filter = (evt) ->
+    campuses = (i.name.split("-")[1] for i in $(evt.currentTarget).find "input:checked")
+
+    d3.selectAll ".dot"
+        .classed "hidden", false
+        .filter (d, i) ->
+            d.dept_campus not in campuses
+        .classed "hidden", true
 
 
 search = (q) ->
@@ -63,7 +73,7 @@ fetch_data = (loader, uri, processor) ->
         data = processor data
         f err, data for f in data_hooks
 
-chart_maker = (params) ->
+chart_maker = (params) =>
     
     params.dataloader ?= (f) ->
         # f looks like (err, data) -> dosomething
@@ -225,3 +235,6 @@ $("#searchform")
 
 $("#facultyselector")
     .change faculty_search
+
+$("#layers")
+    .change campus_filter
