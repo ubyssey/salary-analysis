@@ -70,7 +70,7 @@ data_hooks = []
 
 fetch_data = (loader, uri, processor) ->
     loader uri, (err, data) ->
-        data = processor data
+        data = processor data if processor?
         f err, data for f in data_hooks
 
 chart_maker = (params) =>
@@ -225,9 +225,7 @@ fetch_data d3.csv, "departments.csv", (data) ->
                 .attr "value", "fac#{d.faculty_id}"
                 .text d.faculty_name
                 .appendTo f) for d in data
-    
     data
-    #todo +d....
 
 draw_gender_salary_chart "#deptchart"
 draw_salary_expenses_chart "#expenseschart"
