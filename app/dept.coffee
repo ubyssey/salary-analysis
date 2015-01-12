@@ -124,14 +124,6 @@ chart_maker = (params) =>
           .append "g"
             .attr "transform", "translate(#{margin.left},#{margin.top})"
         
-        if params.reference_line
-            svg.append "path"
-                .datum [0, 9999999]
-                .attr "class", "reference-line"
-                .attr "d", (d3.svg.line()
-                    .x (d) -> d
-                    .y (d) -> height - d)
-        
         tip = d3.tip()
             .attr "class", "d3-tip"
             .html params.tip
@@ -170,6 +162,14 @@ chart_maker = (params) =>
                 r = d3.scale.linear()
                     .range [2.5, 7]
                     .domain d3.extent data, params.d_r
+            
+            if params.reference_line
+                svg.append "path"
+                    .datum d3.extent(data, params.d_x)
+                    .attr "class", "reference-line"
+                    .attr "d", (d3.svg.line()
+                        .x (d) -> x d
+                        .y (d) -> y d)
             
             svg.selectAll ".dot"
                 .data data
