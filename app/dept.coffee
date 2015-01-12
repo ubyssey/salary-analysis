@@ -7,10 +7,11 @@ chart_maker = (params) ->
     
     fmt_dollars = d3.format "$,.0f"
     apply_fmt = (xy, axis) ->
-        if params["fmt_" + xy] is "$"
+        fmt = params["fmt_" + xy]
+        if fmt is "$"
             axis.tickFormat fmt_dollars
-        else if params["fmt_" + xy]
-            axis.tickFormat params["fmt_" + xy]
+        else if fmt
+            axis.tickFormat fmt
     
     (parentdiv) ->
         
