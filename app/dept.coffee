@@ -236,5 +236,5 @@ $("#searchform")
 $("#facultyselector")
     .change faculty_search
 
-$("#layers")
+$("#campuses")
     .change campus_filter

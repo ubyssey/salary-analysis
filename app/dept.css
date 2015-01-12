@@ -15,14 +15,15 @@ body {
 }
 
 
-#layers {
+#campuses {
     list-style: none;
+    display: inline-block;
 }
-#layers li {
+#campuses li {
     display: inline-block;
     margin-left: 20px;
 }
-#layers li:first-of-type {
+#campuses li:first-of-type {
     margin-left: 0;
 }
 
