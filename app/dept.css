@@ -32,6 +32,10 @@ body {
     fill: darkblue;
 }
 
+.searchresult {
+    fill: red;
+}
+
 /* http://bl.ocks.org/Caged/6476579 */
 .d3-tip {
     pointer-events:none;

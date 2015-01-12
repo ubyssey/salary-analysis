@@ -1,4 +1,32 @@
 
+search = (q) ->
+    
+    d3.selectAll ".dot"
+        .classed "searchresult", false
+    
+    if q is ""
+        return
+    
+    q = q.trim().toLowerCase()
+    
+    results = d3.selectAll ".dot"
+        .filter (d, i) ->
+            -1 < d.dept_name.toLowerCase().indexOf q
+    
+    results.classed "searchresult", true
+    
+    console.log results
+
+searchWrapper = (evt) ->
+    q = $(evt.currentTarget).find(".searchbar").val()
+    search q
+    
+    if evt.type is "submit"
+        evt.preventDefault()
+
+
+
+
 chart_maker = (params) ->
     
     params.dataloader ?= (f) ->
@@ -93,7 +121,7 @@ chart_maker = (params) ->
             
             if params.d_r?
                 r = d3.scale.linear()
-                    .range [2.5, 10]
+                    .range [2.5, 7]
                     .domain d3.extent data, params.d_r
             
             svg.selectAll ".dot"
@@ -143,3 +171,7 @@ draw_salary_expenses_chart = chart_maker(
 
 draw_gender_salary_chart "#deptchart"
 draw_salary_expenses_chart "#expenseschart"
+
+$("#searchform")
+    .keyup searchWrapper
+    .submit searchWrapper
