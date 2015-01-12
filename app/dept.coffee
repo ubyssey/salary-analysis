@@ -183,7 +183,10 @@ chart_maker = (params) =>
                 .on "mouseout", tip.hide
 
 
-dept_tip = (d) -> "#{d.dept_name} <span>- ID##{d.dept_id}</span"
+dept_tip = (d) ->
+    r = "#{d.dept_name}"
+    r += "<span>- ID##{d.dept_id}</span" if debug
+    return r
 
 draw_gender_salary_chart = chart_maker(
     d_x: (d) -> +d.avg_salary_m
