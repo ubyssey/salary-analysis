@@ -287,9 +287,7 @@ uby_charts.faculties.gender_salary "#facchart"
 
 # Fetch data sources and finish drawing each chart
 # based on data_hooks callbacks
-#fetch_data d3.csv, "departments.csv", "dept"
 fetch_data d3.csv, "../data/departments.csv", "dept"
-#fetch_data d3.csv, "faculties.csv", "fac"
 fetch_data d3.csv, "../data/faculties.csv", "fac"
 # TODO change once uploaded to ubyssey wp site
 
