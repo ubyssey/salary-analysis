@@ -1,5 +1,5 @@
 (function() {
-  var chart_maker, data_hooks, debug, dept_tip, fetch_data, search, setup_fac_gender_chart, setup_gender_salary_chart, setup_salary_expenses_chart,
+  var chart_maker, data_hooks, debug, fetch_data, search, uby_charts,
     __hasProp = {}.hasOwnProperty,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -86,14 +86,12 @@
 
   fetch_data = function(loader, uri, name) {
     return loader(uri, function(err, data) {
-      var f, _i, _len, _ref, _results;
+      var f, _i, _len, _ref;
       _ref = data_hooks[name];
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         f = _ref[_i];
-        _results.push(f(err, data));
+        f(err, data);
       }
-      return _results;
     });
   };
 
@@ -138,16 +136,16 @@
         data_hooks[params.src] = data_hooks[params.src] || [];
         return data_hooks[params.src].push(function(err, data) {
           var fr, id_maker, r;
-          x.domain(d3.extent(data, params.d_x));
-          y.domain(d3.extent(data, params.d_y));
           if (params.processor) {
             data = params.processor(data);
           }
+          x.domain(d3.extent(data, params.d_x));
+          y.domain(d3.extent(data, params.d_y));
           svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("class", "label").attr("x", width).attr("y", -6).style("text-anchor", "end").text(params.label_x);
           svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text(params.label_y);
           switch (typeof params.d_r) {
             case "function":
-              fr = d3.scale.linear().range([2.5, 7]).domain(d3.extent(data, params.d_r));
+              fr = d3.scale.linear().range([params.min_r || 2.5, params.max_r || 7]).domain(d3.extent(data, params.d_r));
               r = function(d) {
                 return fr(params.d_r(d));
               };
@@ -194,93 +192,112 @@
     };
   })(this);
 
-  dept_tip = function(d) {
-    var r;
-    r = "" + d.dept_name;
-    if (debug) {
-      r += "<span> - ID#" + d.dept_id + "</span";
-    }
-    return r;
-  };
-
-  setup_gender_salary_chart = chart_maker({
-    src: "dept",
-    d_x: function(d) {
-      return +d.avg_salary_m;
-    },
-    d_y: function(d) {
-      return +d.avg_salary_f;
-    },
-    d_r: function(d) {
-      return +d.num_employees;
-    },
-    label_x: "MALE - Average Salary",
-    label_y: "FEMALE - Average Salary",
-    fmt_x: "$",
-    fmt_y: "$",
-    title: "Average Salary, Male vs Female",
-    subtitle: "Reference line shows equality. Points are scaled by department size.",
-    processor: function(data) {
-      var d;
-      return data = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = data.length; _i < _len; _i++) {
-          d = data[_i];
-          if (d.avg_salary_m !== "NULL" && d.avg_salary_f !== "NULL") {
-            _results.push(d);
-          }
+  uby_charts = (function(self) {
+    var dept_tip, salary_mf_notnull;
+    dept_tip = function(d) {
+      var r;
+      r = "" + d.dept_name;
+      if (debug) {
+        r += "<span> - ID#" + d.dept_id + "</span";
+      }
+      return r;
+    };
+    salary_mf_notnull = function(data) {
+      var d, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = data.length; _i < _len; _i++) {
+        d = data[_i];
+        if (d.avg_salary_m !== "NULL" && d.avg_salary_f !== "NULL") {
+          _results.push(d);
         }
-        return _results;
-      })();
-    },
-    tip: dept_tip,
-    reference_line: true
-  });
+      }
+      return _results;
+    };
+    self.departments = {
+      gender_salary: chart_maker({
+        src: "dept",
+        d_x: function(d) {
+          return +d.avg_salary_m;
+        },
+        d_y: function(d) {
+          return +d.avg_salary_f;
+        },
+        d_r: function(d) {
+          return +d.num_employees;
+        },
+        label_x: "MALE - Average Salary",
+        label_y: "FEMALE - Average Salary",
+        fmt_x: "$",
+        fmt_y: "$",
+        title: "Average Salary, Male vs Female, by Department",
+        subtitle: "Reference line shows equality. Points are scaled by department size.",
+        processor: salary_mf_notnull,
+        tip: dept_tip,
+        reference_line: true
+      }),
+      salary_expenses: chart_maker({
+        src: "dept",
+        d_x: function(d) {
+          return +d.avg_salary;
+        },
+        d_y: function(d) {
+          return +d.avg_expenses;
+        },
+        label_x: "Avg Salary",
+        label_y: "Avg Expenses",
+        fmt_x: "$",
+        fmt_y: "$",
+        title: "Avg Salary vs Expenses",
+        tip: dept_tip
+      })
+    };
+    self.faculties = {
+      gender_salary: chart_maker({
+        src: "fac",
+        d_x: function(d) {
+          return +d.avg_salary_m;
+        },
+        d_y: function(d) {
+          return +d.avg_salary_f;
+        },
+        d_r: function(d) {
+          return +d.num_employees;
+        },
+        min_r: 4,
+        max_r: 9,
+        label_x: "MALE - Average Salary",
+        label_y: "FEMALE - Average Salary",
+        fmt_x: "$",
+        fmt_y: "$",
+        title: "Average Salary, Male vs Female, by Faculty",
+        subtitle: "Reference line shows equality. Points are scaled by faculty size.",
+        processor: salary_mf_notnull,
 
-  setup_salary_expenses_chart = chart_maker({
-    src: "dept",
-    d_x: function(d) {
-      return +d.avg_salary;
-    },
-    d_y: function(d) {
-      return +d.avg_expenses;
-    },
-    label_x: "Avg Salary",
-    label_y: "Avg Expenses",
-    fmt_x: "$",
-    fmt_y: "$",
-    title: "Avg Salary vs Expenses",
-    tip: dept_tip
-  });
+        /*
+        processor: (data) ->
+            for d in data
+                for a in ["m", "f"]
+                    k = "avg_salary_#{a}"
+                    d[k] = if d[k] is "NULL" then 0 else d[k]
+            data
+         */
+        height: 300,
+        tip: function(d) {
+          d.dept_name = d.faculty_name;
+          d.dept_id = d.faculty_id;
+          return dept_tip(d);
+        },
+        reference_line: true
+      })
+    };
+    return self;
+  })({});
 
-  setup_fac_gender_chart = chart_maker({
-    src: "fac",
-    d_x: function(d) {
-      return +d.avg_salary;
-    },
-    d_y: function(d) {
-      return +d.avg_expenses;
-    },
-    d_r: 6,
-    label_x: "Avg Salary",
-    label_y: "Avg Expenses",
-    fmt_x: "$",
-    fmt_y: "$",
-    title: "Avg Salary vs Expenses",
-    height: 300,
-    tip: function(d) {
-      d.dept_name = d.faculty_name;
-      d.dept_id = d.faculty_id;
-      return dept_tip(d);
-    }
-  });
+  uby_charts.departments.gender_salary("#deptchart");
 
-  setup_gender_salary_chart("#deptchart");
+  uby_charts.departments.salary_expenses("#expenseschart");
 
-  setup_salary_expenses_chart("#expenseschart");
-
-  setup_fac_gender_chart("#facchart");
+  uby_charts.faculties.gender_salary("#facchart");
 
   fetch_data(d3.csv, "../data/departments.csv", "dept");
 
