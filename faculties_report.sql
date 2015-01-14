@@ -1,5 +1,9 @@
 # FACULTIES REPORT
 select
+	s.*,
+    s.male_count / s.female_count as male_to_female_ratio
+from (
+select
 	f.id as faculty_id,
 	f.full_name as faculty_name,
 	sum(e.remuneration) as salary_total,
@@ -14,7 +18,7 @@ select
     count(*) as num_employees,
     count(nullif(e.gender, "M")) as female_count,
     count(nullif(e.gender, "F")) as male_count,
-    sum(isnull(e.gender)) as no_gender_count # Use SUM because ISNULL returns 1 or 0, and COUNT will still count zeros.
+    sum(isnull(e.gender)) as unknown_gender_count # Use SUM because ISNULL returns 1 or 0, and COUNT will still count zeros.
 from
 	salarydb.main_employee as e
 join salarydb.main_faculty f on (e.faculty_id = f.id)
@@ -22,3 +26,9 @@ group by
 	f.id
 order by
 	salary_total desc
+) s
+
+# TODO:
+# max/min expense:salary (people)
+# DONE male:female (fac)
+# DONE avg salary by fac
