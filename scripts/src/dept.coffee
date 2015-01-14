@@ -73,6 +73,7 @@ data_hooks = {}
 fetch_data = (loader, uri, name) ->
     loader uri, (err, data) ->
         f err, data for f in data_hooks[name]
+        return
 
 chart_maker = (params) =>
     
@@ -162,7 +163,7 @@ chart_maker = (params) =>
             switch typeof params.d_r
                 when "function"
                     fr = d3.scale.linear()
-                        .range [2.5, 7]
+                        .range [params.min_r or 2.5, params.max_r or 7]
                         .domain d3.extent data, params.d_r
                     r = (d) ->
                         fr params.d_r d
@@ -204,65 +205,85 @@ chart_maker = (params) =>
                 svg.selectAll ".dot"
                     .attr "id", (d) -> id_maker d
 
+uby_charts = ( (self) ->
 
-dept_tip = (d) ->
-    r = "#{d.dept_name}"
-    r += "<span> - ID##{d.dept_id}</span" if debug
-    return r
-
-setup_gender_salary_chart = chart_maker(
-    src: "dept"
-    d_x: (d) -> +d.avg_salary_m
-    d_y: (d) -> +d.avg_salary_f
-    d_r: (d) -> +d.num_employees
-    label_x: "MALE - Average Salary"
-    label_y: "FEMALE - Average Salary"
-    fmt_x: "$"
-    fmt_y: "$"
-    title: "Average Salary, Male vs Female"
-    subtitle: "Reference line shows equality. Points are scaled by department size."
-    processor: (data) ->
-        data = (d for d in data when d.avg_salary_m isnt "NULL" and d.avg_salary_f isnt "NULL")
-    tip: dept_tip
-    reference_line: true
-)
-
-setup_salary_expenses_chart = chart_maker(
-    src: "dept"
-    d_x: (d) -> +d.avg_salary
-    d_y: (d) -> +d.avg_expenses
-    label_x: "Avg Salary"
-    label_y: "Avg Expenses"
-    fmt_x: "$"
-    fmt_y: "$"
-    title: "Avg Salary vs Expenses"
-    tip: dept_tip
-)
-
-setup_fac_gender_chart = chart_maker(
-    src: "fac"
-    d_x: (d) -> +d.avg_salary
-    d_y: (d) -> +d.avg_expenses
-    d_r: 6
-    label_x: "Avg Salary"
-    label_y: "Avg Expenses"
-    fmt_x: "$"
-    fmt_y: "$"
-    title: "Avg Salary vs Expenses"
-    height: 300
-    tip: (d) ->
-        # hacky but works for now
-        d.dept_name = d.faculty_name
-        d.dept_id = d.faculty_id
-        dept_tip d
-)
-
+    dept_tip = (d) ->
+        r = "#{d.dept_name}"
+        r += "<span> - ID##{d.dept_id}</span" if debug
+        return r
+    
+    salary_mf_notnull = (data) ->
+        (d for d in data when d.avg_salary_m isnt "NULL" and d.avg_salary_f isnt "NULL")
+    
+    self.departments =
+        gender_salary: chart_maker(
+            src: "dept"
+            d_x: (d) -> +d.avg_salary_m
+            d_y: (d) -> +d.avg_salary_f
+            d_r: (d) -> +d.num_employees
+            label_x: "MALE - Average Salary"
+            label_y: "FEMALE - Average Salary"
+            fmt_x: "$"
+            fmt_y: "$"
+            title: "Average Salary, Male vs Female, by Department"
+            subtitle: "Reference line shows equality. Points are scaled by department size."
+            processor: salary_mf_notnull
+            tip: dept_tip
+            reference_line: true
+        )
+        
+        salary_expenses: chart_maker(
+            src: "dept"
+            d_x: (d) -> +d.avg_salary
+            d_y: (d) -> +d.avg_expenses
+            label_x: "Avg Salary"
+            label_y: "Avg Expenses"
+            fmt_x: "$"
+            fmt_y: "$"
+            title: "Avg Salary vs Expenses"
+            tip: dept_tip
+        )
+    
+    self.faculties =
+        gender_salary: chart_maker(
+            src: "fac"
+            d_x: (d) -> +d.avg_salary_m
+            d_y: (d) -> +d.avg_salary_f
+            d_r: (d) -> +d.num_employees
+            min_r: 4
+            max_r: 9
+            label_x: "MALE - Average Salary"
+            label_y: "FEMALE - Average Salary"
+            fmt_x: "$"
+            fmt_y: "$"
+            title: "Average Salary, Male vs Female, by Faculty"
+            subtitle: "Reference line shows equality. Points are scaled by faculty size."
+            processor: salary_mf_notnull
+            ###
+            processor: (data) ->
+                for d in data
+                    for a in ["m", "f"]
+                        k = "avg_salary_#{a}"
+                        d[k] = if d[k] is "NULL" then 0 else d[k]
+                data
+            ###
+            height: 300
+            tip: (d) ->
+                # hacky but works for now
+                d.dept_name = d.faculty_name
+                d.dept_id = d.faculty_id
+                dept_tip d
+            reference_line: true
+        )
+    
+    self
+) {}
 
 
 # Setup all charts, and then wait for data
-setup_gender_salary_chart "#deptchart"
-setup_salary_expenses_chart "#expenseschart"
-setup_fac_gender_chart "#facchart"
+uby_charts.departments.gender_salary "#deptchart"
+uby_charts.departments.salary_expenses "#expenseschart"
+uby_charts.faculties.gender_salary "#facchart"
 
 # Fetch data sources and finish drawing each chart
 # based on data_hooks callbacks
