@@ -266,11 +266,14 @@ setup_fac_gender_chart "#facchart"
 
 # Fetch data sources and finish drawing each chart
 # based on data_hooks callbacks
-fetch_data d3.csv, "departments.csv", "dept"
-fetch_data d3.csv, "faculties.csv", "fac"
+#fetch_data d3.csv, "departments.csv", "dept"
+fetch_data d3.csv, "../data/departments.csv", "dept"
+#fetch_data d3.csv, "faculties.csv", "fac"
+fetch_data d3.csv, "../data/faculties.csv", "fac"
+# TODO change once uploaded to ubyssey wp site
 
 
-d3.csv "faculties_list.csv", (err, data) ->
+d3.csv "../data/faculties_list.csv", (err, data) ->     # todo update link
     f = $("#facultyselector")
     
     data.unshift

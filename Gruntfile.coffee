@@ -5,23 +5,23 @@ module.exports = (grunt) ->
         jade:
             build:
                 expand: true
-                cwd: "app/"
+                cwd: "charts/src/"
                 src: ["*.jade"]
-                dest: "app/"
+                dest: "charts/"
                 ext: ".html"
         coffee:
             build:
                 expand: true
-                cwd: "app/"
-                src: ["*.coffee"]
-                dest: "app/"
+                cwd: "scripts/src/"
+                src: ["dept.coffee"]
+                dest: "scripts/"
                 ext: ".js"
         watch:
             coffee:
-                files: ["app/*.coffee"]
+                files: ["scripts/src/*.coffee"]
                 tasks: ["coffee:build"]
             jade:
-                files: ["app/*.jade"]
+                files: ["charts/src/*.jade"]
                 tasks: ["jade:build"]
     )
     
