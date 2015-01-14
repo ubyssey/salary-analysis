@@ -1,0 +1,53 @@
+<style>
+	div.chart{
+		font-family: "LFT Etica";
+		font-weight: 300;
+		font-size: 12px;
+		width: 100%;
+		padding: 0;
+	}
+	path {
+		fill: none;
+		stroke: black;
+		stroke-width: 1;
+	}
+	li.header {
+		font-weight: 500;
+	}
+	ul.chart.bar li.bar, li.header {
+		display: block;
+		overflow-y: auto;
+		overflow-x: hidden;
+		position: relative;
+		margin-bottom: 2px;
+	}
+	li.bar span {
+		display: block;
+		white-space: nowrap;
+		background: rgb(219, 230, 240);
+	}
+	li.bar a, li.header a {
+		text-decoration: none;
+		color: inherit;
+	}
+	li.bar a:hover {
+		background: rgba(0, 0, 0, 0.15);
+	}
+	li.bar label, li.header label {
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+	li.bar a, li.bar label, li.header a, li.header label {
+		padding: 5px;
+		display: block;
+	}
+</style>
+
+<ul class="chart bar faculty-average"></ul>
+
+<ul class="chart bar faculty-highest"></ul>
+
+<script src="../scripts/d3.min.js"></script>
+<script src="../scripts/accounting.min.js"></script>
+<script src="../scripts/faculties.js"></script>
