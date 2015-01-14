@@ -11,6 +11,9 @@ body {
     }
 }
 
+.halfwidth {
+    width: 50%;
+}
 .chart {
     margin-bottom: 50px;
     margin-top: 30px;
@@ -19,10 +22,17 @@ body {
     text-align: center;
     color: #444;
 }
+.chart h3 {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    font-weight: normal;
+}
 
 
 #searchform .searchbar {
     margin-right: 20px;
+    margin-left: 20px;
 }
 
 #campuses {
