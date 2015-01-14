@@ -9,19 +9,22 @@ html(lang="en")
         p Processed from <a href="http://ubyssey.ca/salaries">data obtained by the Ubyssey.</a>
         
         form#searchform
+            label Search:
             input(type="text").searchbar
             select#facultyselector
             ul#campuses
                 li
-                    input(type="checkbox" name="campus-van" checked)
-                    label Vancouver
+                    input(type="checkbox" name="campus-van" checked)#checkbox-van
+                    label(for="checkbox-van") Vancouver
                 li
-                    input(type="checkbox" name="campus-oka" checked)
-                    label Okanagan
+                    input(type="checkbox" name="campus-oka" checked)#checkbox-oka
+                    label(for="checkbox-oka") Okanagan
         
         #deptchart.chart
-
         #expenseschart.chart
+        
+        h1 Faculties
+        #facchart.chart.halfwidth
         
         script(src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js")
         script(src="d3-tip.js")
