@@ -32,7 +32,7 @@ search = ( (self) ->
     self.faculty_filter = (evt) ->
         fid = $(evt.currentTarget).val().split("fac")[1]
     
-        if fid is "0"
+        if +fid is 0
             delete predicates.fac
         else
             predicates.fac = (d, i) ->
