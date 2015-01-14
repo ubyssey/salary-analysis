@@ -91,7 +91,7 @@ body {
 
 .reference-line {
     stroke: #999;
-    shape-rendering: crispEdges;
+    stroke-width: 1.3px;
 }
 
 
