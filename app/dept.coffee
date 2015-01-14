@@ -4,81 +4,77 @@ if not debug
     console.log = ->
 
 
-# Dict of test predicates to apply to charts
-predicates = {}
 
-_search = ->
-    results = d3.selectAll ".dot"
-        .classed "searchresult", false
+search = ( (self) ->
+    # This self-executing anonymous function allows for private and
+    # public vars on the `search` object, which is passed in and
+    # returned as `self`.
     
-    if Object.keys(predicates).length is 0
-        return
+    # Dict of test predicates to apply to charts
+    predicates = {}
+
+    _search = ->
+        results = d3.selectAll ".dot"
+            .classed "searchresult", false
     
-    results = results.filter (d, i) ->
-        for own key, p of predicates
-            if p and not p d, i
-                return false
-        true
+        if Object.keys(predicates).length is 0
+            return
     
-    results.classed "searchresult", true
-    console.log results
-
-
-faculty_search = (evt) ->
-    fid = $(evt.currentTarget).val().split("fac")[1]
+        results = results.filter (d, i) ->
+            for own key, p of predicates
+                if p and not p d, i
+                    return false
+            true
     
-    if fid is "0"
-        delete predicates.fac
-    else
-        predicates.fac = (d, i) ->
-            d.faculty_id is fid
-    _search()
+        results.classed "searchresult", true
+        console.log results
 
+    self.faculty_filter = (evt) ->
+        fid = $(evt.currentTarget).val().split("fac")[1]
+    
+        if fid is "0"
+            delete predicates.fac
+        else
+            predicates.fac = (d, i) ->
+                d.faculty_id is fid
+        _search()
 
-campus_filter = (evt) ->
-    campuses = (i.name.split("-")[1] for i in $(evt.currentTarget).find "input:checked")
+    self.campus_filter = (evt) ->
+        campuses = (i.name.split("-")[1] for i in $(evt.currentTarget).find "input:checked")
 
-    d3.selectAll ".dot"
-        .classed "hidden", false
-        .filter (d, i) ->
-            d.dept_campus not in campuses
-        .classed "hidden", true
+        d3.selectAll ".dot"
+            .classed "hidden", false
+            .filter (d, i) ->
+                d.campus and d.campus not in campuses
+            .classed "hidden", true
 
-
-search = (q) ->
-    q = q.trim().toLowerCase()
+    self.text_search = (evt) ->
+        if evt.type is "submit"
+            evt.preventDefault()
         
-    if q is ""
-        delete predicates.q
-    else
-        predicates.q = (d, i) ->
-            -1 < d.dept_name.toLowerCase().indexOf q
-    _search()
+        q = $(evt.currentTarget).find(".searchbar").val()
+        q = q.trim().toLowerCase()
+        
+        if q is ""
+            delete predicates.q
+        else
+            predicates.q = (d, i) ->
+                haystack = d.dept_name or d.faculty_name
+                -1 < haystack.toLowerCase().indexOf q
+        _search()
 
-searchWrapper = (evt) ->
-    q = $(evt.currentTarget).find(".searchbar").val()
-    search q
-    
-    if evt.type is "submit"
-        evt.preventDefault()
-
-
+    self
+) {}
 
 
 
-data_hooks = []
+data_hooks = {}
 
-fetch_data = (loader, uri, processor) ->
+fetch_data = (loader, uri, name) ->
     loader uri, (err, data) ->
-        data = processor data if processor?
-        f err, data for f in data_hooks
+        f err, data for f in data_hooks[name]
 
 chart_maker = (params) =>
-    
-    params.dataloader ?= (f) ->
-        # f looks like (err, data) -> dosomething
-        d3.csv "departments.csv", f
-        data_hooks.push 
     
     fmt_dollars = d3.format "$,.0f"
     apply_fmt = (xy, axis) ->
@@ -88,10 +84,13 @@ chart_maker = (params) =>
         else if fmt
             axis.tickFormat fmt
     
+    # Return the following function
     (parentdiv) ->
         
         if params.title?
             $(parentdiv).append $("<h2/>").text params.title
+        if params.subtitle?
+            $(parentdiv).append $("<h3/>").text params.subtitle
         
         margin =
             top: 20
@@ -99,7 +98,7 @@ chart_maker = (params) =>
             bottom: 30
             left: 50
         width = $(parentdiv).width() - margin.left - margin.right
-        height = 500 - margin.top - margin.bottom
+        height = (params.height or 500) - margin.top - margin.bottom
     
         x = d3.scale.linear()
             .range [0, width]
@@ -129,11 +128,13 @@ chart_maker = (params) =>
             .html params.tip
         svg.call tip
         
-        data_hooks.push (err, data) ->
+        data_hooks[params.src] = data_hooks[params.src] or []
+        
+        # This function will be called when the data is loaded.
+        data_hooks[params.src].push (err, data) ->
             x.domain d3.extent data, params.d_x
             y.domain d3.extent data, params.d_y
         
-            window.data = data
             data = params.processor data if params.processor
         
             svg.append "g"
@@ -158,10 +159,17 @@ chart_maker = (params) =>
                 .style "text-anchor", "end"
                 .text params.label_y
             
-            if params.d_r?
-                r = d3.scale.linear()
-                    .range [2.5, 7]
-                    .domain d3.extent data, params.d_r
+            switch typeof params.d_r
+                when "function"
+                    fr = d3.scale.linear()
+                        .range [2.5, 7]
+                        .domain d3.extent data, params.d_r
+                    r = (d) ->
+                        fr params.d_r d
+                when "number"
+                    r = -> params.d_r
+                else
+                    r = 3.5
             
             if params.reference_line
                 svg.append "path"
@@ -171,12 +179,23 @@ chart_maker = (params) =>
                         .x (d) -> x d
                         .y (d) -> y d)
             
+            id_maker = (d) ->
+                `var reg = / /g;`   # would not compile properly in coffee, unsure why #todo
+                text = d.dept_name or d.faculty_name
+                text = text.replace reg, "-"
+                prefix = d.faculty_name
+                "#{prefix}-dept-#{text}"
+            
+            data.sort (a, b) ->
+                a.faculty_name.localeCompare b.faculty_name
+            
             svg.selectAll ".dot"
                 .data data
               .enter()
                 .append "circle"
                 .attr "class", "dot"
-                .attr "r", if params.d_r? then ((d) -> r params.d_r d) else 3.5
+                .attr "id", (d) -> id_maker d
+                .attr "r", r
                 .attr "cx", (d) -> x params.d_x d
                 .attr "cy", (d) -> y params.d_y d
                 .on "mouseover", tip.show
@@ -185,10 +204,11 @@ chart_maker = (params) =>
 
 dept_tip = (d) ->
     r = "#{d.dept_name}"
-    r += "<span>- ID##{d.dept_id}</span" if debug
+    r += "<span> - ID##{d.dept_id}</span" if debug
     return r
 
-draw_gender_salary_chart = chart_maker(
+setup_gender_salary_chart = chart_maker(
+    src: "dept"
     d_x: (d) -> +d.avg_salary_m
     d_y: (d) -> +d.avg_salary_f
     d_r: (d) -> +d.num_employees
@@ -196,13 +216,16 @@ draw_gender_salary_chart = chart_maker(
     label_y: "FEMALE - Average Salary"
     fmt_x: "$"
     fmt_y: "$"
-    title: "Avg Salary, Male vs Female"
-    processor: (data) -> (d for d in data when d.avg_salary_m isnt "NULL" and d.avg_salary_f isnt "NULL")
+    title: "Average Salary, Male vs Female"
+    subtitle: "Reference line shows equality. Points are scaled by department size."
+    processor: (data) ->
+        data = (d for d in data when d.avg_salary_m isnt "NULL" and d.avg_salary_f isnt "NULL")
     tip: dept_tip
     reference_line: true
 )
 
-draw_salary_expenses_chart = chart_maker(
+setup_salary_expenses_chart = chart_maker(
+    src: "dept"
     d_x: (d) -> +d.avg_salary
     d_y: (d) -> +d.avg_expenses
     label_x: "Avg Salary"
@@ -213,29 +236,55 @@ draw_salary_expenses_chart = chart_maker(
     tip: dept_tip
 )
 
-fetch_data d3.csv, "departments.csv", (data) ->
-    d3.csv "faculties_list.csv", (err, data) ->
-        f = $("#facultyselector")
-        
-        data.unshift
-            faculty_name: "(All Faculties)"
-            faculty_id: 0
-        
-        ($("<option/>")
-                .attr "value", "fac#{d.faculty_id}"
-                .text d.faculty_name
-                .appendTo f) for d in data
-    data
+setup_fac_gender_chart = chart_maker(
+    src: "fac"
+    d_x: (d) -> +d.avg_salary
+    d_y: (d) -> +d.avg_expenses
+    d_r: 6
+    label_x: "Avg Salary"
+    label_y: "Avg Expenses"
+    fmt_x: "$"
+    fmt_y: "$"
+    title: "Avg Salary vs Expenses"
+    height: 300
+    tip: (d) ->
+        # hacky but works for now
+        d.dept_name = d.faculty_name
+        d.dept_id = d.faculty_id
+        dept_tip d
+)
 
-draw_gender_salary_chart "#deptchart"
-draw_salary_expenses_chart "#expenseschart"
+
+
+# Setup all charts, and then wait for data
+setup_gender_salary_chart "#deptchart"
+setup_salary_expenses_chart "#expenseschart"
+setup_fac_gender_chart "#facchart"
+
+# Fetch data sources and finish drawing each chart
+# based on data_hooks callbacks
+fetch_data d3.csv, "departments.csv", "dept"
+fetch_data d3.csv, "faculties.csv", "fac"
+
+
+d3.csv "faculties_list.csv", (err, data) ->
+    f = $("#facultyselector")
+    
+    data.unshift
+        faculty_name: "(All Faculties)"
+        faculty_id: 0
+    
+    ($("<option/>")
+            .attr "value", "fac#{d.faculty_id}"
+            .text d.faculty_name
+            .appendTo f) for d in data
 
 $("#searchform")
-    .keyup searchWrapper
-    .submit searchWrapper
+    .keyup search.text_search
+    .submit search.text_search
 
 $("#facultyselector")
-    .change faculty_search
+    .change search.faculty_filter
 
 $("#campuses")
-    .change campus_filter
+    .change search.campus_filter
