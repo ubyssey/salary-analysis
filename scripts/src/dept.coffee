@@ -133,10 +133,10 @@ chart_maker = (params) =>
         
         # This function will be called when the data is loaded.
         data_hooks[params.src].push (err, data) ->
+            data = params.processor data if params.processor
+            
             x.domain d3.extent data, params.d_x
             y.domain d3.extent data, params.d_y
-        
-            data = params.processor data if params.processor
         
             svg.append "g"
                 .attr "class", "x axis"
