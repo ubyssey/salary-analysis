@@ -1,3 +1,7 @@
+# ubyssey/salary-analysis
+*Visualizations of the public [UBC salary information](https://github.com/ubyssey/salarydb) obtained by the Ubyssey.*
+
+
 ## Dev setup
 *As it applies to the departments/dept family; to be updated.*
 
@@ -6,19 +10,21 @@ CDN as on ubyssey.ca; d3 is saved locally. (Subject to change). We also
 use [`d3-tip.js`](https://github.com/Caged/d3-tip), which is packaged in this 
 repo at the moment.
 
-**Development dependencies** are noted in `package.json`. Direct deps are just
-`grunt` and various `grunt-contrib-*` friends, but they themselves depend on 
-things like `coffee-script` and `jade`.
+**Development dependencies** are noted in `package.json` and can be automatically
+installed by running `npm install`. Direct deps are just `grunt` and various `grunt-contrib-*` friends, which themselves depend on things like `coffee-script` and `jade`.
 
-Since these are all static files, for development I've just been doing
+Since these are all static files, the following should work for development:
 ```
+$ git clone https://github.com/ubyssey/salary-analysis.git
+$ cd salary-analysis
+$ npm install
 $ python -m SimpleHTTPServer 8008
 ```
 and, in a separate tab,
 ```
 $ grunt watch
 ```
-and then navigating to `localhost:8008/charts/departments.html`.
+and then navigating to `localhost:8008/charts/departments.html` or whichever chart.
 
 
 ### License for [d3-tip](https://github.com/Caged/d3-tip)
