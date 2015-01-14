@@ -1,4 +1,4 @@
-dept_id,dept_name,dept_campus,faculty_id,faculty_name,salary_total,avg_salary,avg_salary_m,avg_salary_f,avg_salary_unknown_gender,expenses_total,avg_expenses,avg_emp_rating,num_ratings,num_employees,female_count,male_count,no_gender_count
+dept_id,dept_name,campus,faculty_id,faculty_name,salary_total,avg_salary,avg_salary_m,avg_salary_f,avg_salary_unknown_gender,expenses_total,avg_expenses,avg_emp_rating,num_ratings,num_employees,female_count,male_count,no_gender_count
 7,"Computer Science",van,4,"Faculty of Science",9819466,148779.7879,155154.5227,135673.0000,136459.1000,419446,6355.2424,12.8333,37,66,12,44,10
 20,"Physics & Astronomy",van,4,"Faculty of Science",9645709,141848.6618,144374.6327,146566.5000,122854.1111,484447,7124.2206,5.4545,13,68,10,49,9
 67,"School of Population & Public Health",van,5,"Faculty of Medicine",9499323,158322.0500,174192.1429,141104.3043,152949.3333,362993,6049.8833,3.0000,2,60,23,28,9
