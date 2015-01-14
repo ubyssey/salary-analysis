@@ -1,8 +1,9 @@
 ## Dev setup
+*As it applies to the departments/dept family; to be updated.*
 
-**Dependencies** are `jQuery` and `d3.js`, however by default these are loaded 
-in `departments.jade` from the Cloudflare JS CDN. (Subject to change.) We also
-use [`d3-tip.js`](https://github.com/Caged/d3-tip), but it's packaged in this 
+**Dependencies** are `jQuery` and `d3.js`. jQuery is loaded from the Google
+CDN as on ubyssey.ca; d3 is saved locally. (Subject to change). We also
+use [`d3-tip.js`](https://github.com/Caged/d3-tip), which is packaged in this 
 repo at the moment.
 
 **Development dependencies** are noted in `package.json`. Direct deps are just
@@ -11,10 +12,13 @@ things like `coffee-script` and `jade`.
 
 Since these are all static files, for development I've just been doing
 ```
-$ cd depts-faculties/app
 $ python -m SimpleHTTPServer 8008
 ```
-and then navigating to `localhost:8008/departments.html`.
+and, in a separate tab,
+```
+$ grunt watch
+```
+and then navigating to `localhost:8008/charts/departments.html`.
 
 
 ### License for [d3-tip](https://github.com/Caged/d3-tip)
