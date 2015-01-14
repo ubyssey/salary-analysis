@@ -179,13 +179,6 @@ chart_maker = (params) =>
                         .x (d) -> x d
                         .y (d) -> y d)
             
-            id_maker = (d) ->
-                `var reg = / /g;`   # would not compile properly in coffee, unsure why #todo
-                text = d.dept_name or d.faculty_name
-                text = text.replace reg, "-"
-                prefix = d.faculty_name
-                "#{prefix}-dept-#{text}"
-            
             data.sort (a, b) ->
                 a.faculty_name.localeCompare b.faculty_name
             
@@ -194,12 +187,21 @@ chart_maker = (params) =>
               .enter()
                 .append "circle"
                 .attr "class", "dot"
-                .attr "id", (d) -> id_maker d
                 .attr "r", r
                 .attr "cx", (d) -> x params.d_x d
                 .attr "cy", (d) -> y params.d_y d
                 .on "mouseover", tip.show
                 .on "mouseout", tip.hide
+            
+            if debug
+                id_maker = (d) ->
+                    `var reg = / /g;`   # would not compile properly in coffee, unsure why #todo
+                    text = (d.dept_name or d.faculty_name).replace reg, "-"
+                    prefix = d.faculty_name
+                    "#{prefix}-dept-#{text}"
+                
+                svg.selectAll ".dot"
+                    .attr "id", (d) -> id_maker d
 
 
 dept_tip = (d) ->
