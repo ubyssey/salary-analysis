@@ -179,8 +179,9 @@ chart_maker = (params) =>
                         .x (d) -> x d
                         .y (d) -> y d)
             
-            data.sort (a, b) ->
-                a.faculty_name.localeCompare b.faculty_name
+            if debug
+                data.sort (a, b) ->
+                    a.faculty_name.localeCompare b.faculty_name
             
             svg.selectAll ".dot"
                 .data data
