@@ -28,6 +28,7 @@ search = ( (self) ->
     
         results.classed "searchresult", true
         console.log results
+        return results[0].length
 
     self.faculty_filter = (evt) ->
         fid = $(evt.currentTarget).val().split("fac")[1]
@@ -47,6 +48,7 @@ search = ( (self) ->
             .filter (d, i) ->
                 d.campus and d.campus not in campuses
             .classed "hidden", true
+        return
 
     self.text_search = (evt) ->
         if evt.type is "submit"
@@ -74,6 +76,7 @@ fetch_data = (loader, uri, name) ->
     loader uri, (err, data) ->
         f err, data for f in data_hooks[name]
         return
+    return
 
 chart_maker = (params) =>
     
@@ -197,13 +200,15 @@ chart_maker = (params) =>
             
             if debug
                 id_maker = (d) ->
-                    `var reg = / /g;`   # would not compile properly in coffee, unsure why #todo
+                    `var reg = / /g`   # would not compile properly in coffee, unsure why #todo
                     text = (d.dept_name or d.faculty_name).replace reg, "-"
                     prefix = d.faculty_name
                     "#{prefix}-dept-#{text}"
                 
                 svg.selectAll ".dot"
                     .attr "id", (d) -> id_maker d
+            return
+        return
 
 uby_charts = ( (self) ->
 
@@ -303,6 +308,7 @@ d3.csv "../data/faculties_list.csv", (err, data) ->     # todo update link
             .attr "value", "fac#{d.faculty_id}"
             .text d.faculty_name
             .appendTo f) for d in data
+    return
 
 $("#searchform")
     .keyup search.text_search

@@ -30,7 +30,8 @@
         return true;
       });
       results.classed("searchresult", true);
-      return console.log(results);
+      console.log(results);
+      return results[0].length;
     };
     self.faculty_filter = function(evt) {
       var fid;
@@ -56,7 +57,7 @@
         }
         return _results;
       })();
-      return d3.selectAll(".dot").classed("hidden", false).filter(function(d, i) {
+      d3.selectAll(".dot").classed("hidden", false).filter(function(d, i) {
         var _ref;
         return d.campus && (_ref = d.campus, __indexOf.call(campuses, _ref) < 0);
       }).classed("hidden", true);
@@ -85,7 +86,7 @@
   data_hooks = {};
 
   fetch_data = function(loader, uri, name) {
-    return loader(uri, function(err, data) {
+    loader(uri, function(err, data) {
       var f, _i, _len, _ref;
       _ref = data_hooks[name];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -134,7 +135,7 @@
         tip = d3.tip().attr("class", "d3-tip").html(params.tip);
         svg.call(tip);
         data_hooks[params.src] = data_hooks[params.src] || [];
-        return data_hooks[params.src].push(function(err, data) {
+        data_hooks[params.src].push(function(err, data) {
           var fr, id_maker, r;
           if (params.processor) {
             data = params.processor(data);
@@ -177,13 +178,13 @@
           }).on("mouseover", tip.show).on("mouseout", tip.hide);
           if (debug) {
             id_maker = function(d) {
-              var reg = / /g;;
+              var reg = / /g;
               var prefix, text;
               text = (d.dept_name || d.faculty_name).replace(reg, "-");
               prefix = d.faculty_name;
               return "" + prefix + "-dept-" + text;
             };
-            return svg.selectAll(".dot").attr("id", function(d) {
+            svg.selectAll(".dot").attr("id", function(d) {
               return id_maker(d);
             });
           }
@@ -304,18 +305,16 @@
   fetch_data(d3.csv, "../data/faculties.csv", "fac");
 
   d3.csv("../data/faculties_list.csv", function(err, data) {
-    var d, f, _i, _len, _results;
+    var d, f, _i, _len;
     f = $("#facultyselector");
     data.unshift({
       faculty_name: "(All Faculties)",
       faculty_id: 0
     });
-    _results = [];
     for (_i = 0, _len = data.length; _i < _len; _i++) {
       d = data[_i];
-      _results.push($("<option/>").attr("value", "fac" + d.faculty_id).text(d.faculty_name).appendTo(f));
+      $("<option/>").attr("value", "fac" + d.faculty_id).text(d.faculty_name).appendTo(f);
     }
-    return _results;
   });
 
   $("#searchform").keyup(search.text_search).submit(search.text_search);
