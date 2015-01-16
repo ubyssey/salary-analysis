@@ -6,7 +6,7 @@ module.exports = (grunt) ->
             build:
                 expand: true
                 cwd: "charts/src/"
-                src: ["*.jade"]
+                src: ["*.jade", "!search-filters.jade"]
                 dest: "charts/"
                 ext: ".html"
         coffee:
