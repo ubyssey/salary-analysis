@@ -28,7 +28,7 @@ search = ( (self) ->
     
         results.classed "searchresult", true
         console.log results
-        return results[0].length
+        results[0].length
 
     self.faculty_filter = (evt) ->
         fid = $(evt.currentTarget).val().split("fac")[1]
@@ -187,7 +187,7 @@ chart_maker = (params) =>
                 data.sort (a, b) ->
                     a.faculty_name.localeCompare b.faculty_name
             
-            svg.selectAll ".dot"
+            dots = svg.selectAll ".dot"
                 .data data
               .enter()
                 .append "circle"
@@ -197,6 +197,9 @@ chart_maker = (params) =>
                 .attr "cy", (d) -> y params.d_y d
                 .on "mouseover", tip.show
                 .on "mouseout", tip.hide
+            
+            if params.click
+                dots.on "click", params.click
             
             if debug
                 id_maker = (d) ->
@@ -212,6 +215,8 @@ chart_maker = (params) =>
 
 uby_charts = ( (self) ->
 
+    SALARYDB = "http://ubyssey.ca/salaries"
+
     dept_tip = (d) ->
         r = "#{d.dept_name}"
         r += "<span> - ID##{d.dept_id}</span" if debug
@@ -219,6 +224,12 @@ uby_charts = ( (self) ->
     
     salary_mf_notnull = (data) ->
         (d for d in data when d.avg_salary_m isnt "NULL" and d.avg_salary_f isnt "NULL")
+    
+    click_dept = (d) ->
+        window.open "#{SALARYDB}/search/?department_id=#{d.dept_id}"
+    
+    click_fac = (d) ->
+        window.open "#{SALARYDB}/search/?faculty_id=#{d.faculty_id}"
     
     self.departments =
         gender_salary: chart_maker(
@@ -234,6 +245,7 @@ uby_charts = ( (self) ->
             subtitle: "Reference line shows equality. Points are scaled by department size."
             processor: salary_mf_notnull
             tip: dept_tip
+            click: click_dept
             reference_line: true
         )
         
@@ -247,6 +259,7 @@ uby_charts = ( (self) ->
             fmt_y: "$"
             title: "Avg Salary vs Expenses"
             tip: dept_tip
+            click: click_dept
         )
     
     self.faculties =
@@ -278,6 +291,7 @@ uby_charts = ( (self) ->
                 d.dept_name = d.faculty_name
                 d.dept_id = d.faculty_id
                 dept_tip d
+            click: click_fac
             reference_line: true
         )
     

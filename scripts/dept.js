@@ -136,7 +136,7 @@
         svg.call(tip);
         data_hooks[params.src] = data_hooks[params.src] || [];
         data_hooks[params.src].push(function(err, data) {
-          var fr, id_maker, r;
+          var dots, fr, id_maker, r;
           if (params.processor) {
             data = params.processor(data);
           }
@@ -171,11 +171,14 @@
               return a.faculty_name.localeCompare(b.faculty_name);
             });
           }
-          svg.selectAll(".dot").data(data).enter().append("circle").attr("class", "dot").attr("r", r).attr("cx", function(d) {
+          dots = svg.selectAll(".dot").data(data).enter().append("circle").attr("class", "dot").attr("r", r).attr("cx", function(d) {
             return x(params.d_x(d));
           }).attr("cy", function(d) {
             return y(params.d_y(d));
           }).on("mouseover", tip.show).on("mouseout", tip.hide);
+          if (params.click) {
+            dots.on("click", params.click);
+          }
           if (debug) {
             id_maker = function(d) {
               var reg = / /g;
@@ -194,7 +197,8 @@
   })(this);
 
   uby_charts = (function(self) {
-    var dept_tip, salary_mf_notnull;
+    var SALARYDB, click_dept, click_fac, dept_tip, salary_mf_notnull;
+    SALARYDB = "http://ubyssey.ca/salaries";
     dept_tip = function(d) {
       var r;
       r = "" + d.dept_name;
@@ -213,6 +217,12 @@
         }
       }
       return _results;
+    };
+    click_dept = function(d) {
+      return window.open("" + SALARYDB + "/search/?department_id=" + d.dept_id);
+    };
+    click_fac = function(d) {
+      return window.open("" + SALARYDB + "/search/?faculty_id=" + d.faculty_id);
     };
     self.departments = {
       gender_salary: chart_maker({
@@ -234,6 +244,7 @@
         subtitle: "Reference line shows equality. Points are scaled by department size.",
         processor: salary_mf_notnull,
         tip: dept_tip,
+        click: click_dept,
         reference_line: true
       }),
       salary_expenses: chart_maker({
@@ -249,7 +260,8 @@
         fmt_x: "$",
         fmt_y: "$",
         title: "Avg Salary vs Expenses",
-        tip: dept_tip
+        tip: dept_tip,
+        click: click_dept
       })
     };
     self.faculties = {
@@ -288,6 +300,7 @@
           d.dept_id = d.faculty_id;
           return dept_tip(d);
         },
+        click: click_fac,
         reference_line: true
       })
     };
