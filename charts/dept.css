@@ -1,22 +1,16 @@
-body {
-    font: 10px Helvetica, sans-serif;
-    margin: 0 auto;
-    padding: 20px 30px;
-    
-    width: 1100px;
+div.chart{
+	font-family: "LFT-Etica", Impact, Helvetica, sans-serif;
+	font-weight: 300;
+	font-size: 12px;
+	width: 100%;
+	padding: 0;
+    margin-bottom: 50px;
+    margin-top: 30px;
 }
-@media(max-width:1100px) {
-    body {
-        width: 95%;
-    }
-}
+
 
 .halfwidth {
     width: 50%;
-}
-.chart {
-    margin-bottom: 50px;
-    margin-top: 30px;
 }
 .chart h2 {
     text-align: center;
@@ -30,20 +24,24 @@ body {
 }
 
 
+#searchform {
+    text-align: center;
+    font: 12px Helvetica, sans-serif;
+}
 #searchform .searchbar {
     margin-right: 20px;
     margin-left: 20px;
 }
 
-#campuses {
+#searchform .campuses {
     list-style: none;
     display: inline-block;
 }
-#campuses li {
+#searchform .campuses li {
     display: inline-block;
     margin-left: 20px;
 }
-#campuses li:first-of-type {
+#searchform .campuses li:first-of-type {
     margin-left: 0;
 }
 
