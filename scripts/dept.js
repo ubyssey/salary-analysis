@@ -1,3 +1,8 @@
+
+/*!
+by Ben Cook / The Ubyssey
+ */
+
 (function() {
   var chart_maker, data_hooks, debug, fetch_data, search, uby_charts,
     __hasProp = {}.hasOwnProperty,

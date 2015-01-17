@@ -26,6 +26,9 @@ $ grunt watch
 ```
 and then navigating to `localhost:8008/charts/departments.html` or whichever chart.
 
+`$ grunt build` will build all the source, uglifying, minifying, and combining files together --
+see `Gruntfile.coffee` for specifics.
+
 
 ### License for [d3-tip](https://github.com/Caged/d3-tip)
 

@@ -1,3 +1,6 @@
+###!
+by Ben Cook / The Ubyssey
+###
 
 debug = true
 if not debug
