@@ -21,7 +21,7 @@ module.exports = (grunt) ->
                 files: ["scripts/src/*.coffee"]
                 tasks: ["coffee:build"]
             jade:
-                files: ["charts/src/*.jade"]
+                files: ["charts/src/*.jade", "charts/*.css"]
                 tasks: ["jade:build"]
     )
     

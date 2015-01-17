@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "repository": {
-      "type": "git",
-      "url": "https://github.com/ubyssey/salary-analysis.git"
+    "type": "git",
+    "url": "https://github.com/ubyssey/salary-analysis.git"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
