@@ -324,12 +324,12 @@ d3.csv "../data/faculties_list.csv", (err, data) ->     # todo update link
             .appendTo f) for d in data
     return
 
-$("#searchform")
+$("#chartsearchform")
     .keyup search.text_search
     .submit search.text_search
 
 $("#facultyselector")
     .change search.faculty_filter
 
-$("#searchform .campuses")
+$("#chartsearchform .campuses")
     .change search.campus_filter

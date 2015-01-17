@@ -6,6 +6,7 @@ div.chart{
 	padding: 0;
     margin-bottom: 50px;
     margin-top: 30px;
+    text-align: center;
 }
 
 
@@ -13,58 +14,62 @@ div.chart{
     width: 50%;
 }
 .chart h2 {
-    text-align: center;
     color: #444;
 }
 .chart h3 {
-    text-align: center;
     color: #777;
     font-style: italic;
     font-weight: normal;
 }
 
 
-#searchform {
+#chartsearchform {
     text-align: center;
     font: 12px Helvetica, sans-serif;
 }
-#searchform .searchbar {
+#chartsearchform .searchbar {
     margin-right: 20px;
     margin-left: 20px;
 }
 
-#searchform .campuses {
+#chartsearchform .campuses {
     list-style: none;
     display: inline-block;
 }
-#searchform .campuses li {
+#chartsearchform .campuses li {
     display: inline-block;
     margin-left: 20px;
 }
-#searchform .campuses li:first-of-type {
+#chartsearchform .campuses li:first-of-type {
     margin-left: 0;
 }
 
 
 
 
-.axis path, .axis line {
+.chart .axis path, .chart .axis line {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
 }
-
-
-.dot {
-    fill: lightblue;
+.chart .reference-line {
+    stroke: #999;
+    stroke-width: 1.3px;
 }
 
-.dot:hover {
+
+.chart .dot {
+    fill: lightblue;
+}
+.chart .dot:hover {
     fill: darkblue;
 }
 
-.searchresult {
+.chart .searchresult {
     fill: red;
+}
+.chart .hidden {
+    display: none;
 }
 
 /* http://bl.ocks.org/Caged/6476579 */
@@ -84,15 +89,4 @@ div.chart{
 }
 .d3-tip span {
     color: #999;
-}
-
-.reference-line {
-    stroke: #999;
-    stroke-width: 1.3px;
-}
-
-
-
-.hidden {
-    display: none;
 }

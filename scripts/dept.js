@@ -330,10 +330,10 @@
     }
   });
 
-  $("#searchform").keyup(search.text_search).submit(search.text_search);
+  $("#chartsearchform").keyup(search.text_search).submit(search.text_search);
 
   $("#facultyselector").change(search.faculty_filter);
 
-  $("#searchform .campuses").change(search.campus_filter);
+  $("#chartsearchform .campuses").change(search.campus_filter);
 
 }).call(this);
