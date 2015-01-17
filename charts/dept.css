@@ -71,7 +71,9 @@ div.chart{
 .d3-tip {
     pointer-events:none;
     line-height: 1;
+    font-family: Helvetica, sans-serif;
     font-weight: bold;
+    font-size: 11px;
     padding: 12px;
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
@@ -79,9 +81,6 @@ div.chart{
 
     max-width: 400px;
     max-height: 300px;
-}
-.d3-tip {
-    font-size: 11px;
 }
 .d3-tip span {
     color: #999;
