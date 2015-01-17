@@ -240,7 +240,7 @@
         label_y: "FEMALE - Average Salary",
         fmt_x: "$",
         fmt_y: "$",
-        title: "Average Salary, Male vs Female, by Department",
+        title: "Average Salary, Male vs Female (by Department)",
         subtitle: "Reference line shows equality. Points are scaled by department size.",
         processor: salary_mf_notnull,
         tip: dept_tip,
@@ -259,7 +259,7 @@
         label_y: "Avg Expenses",
         fmt_x: "$",
         fmt_y: "$",
-        title: "Avg Salary vs Expenses",
+        title: "Avg Salary vs Expenses (by Department)",
         tip: dept_tip,
         click: click_dept
       })
@@ -282,7 +282,7 @@
         label_y: "FEMALE - Average Salary",
         fmt_x: "$",
         fmt_y: "$",
-        title: "Average Salary, Male vs Female, by Faculty",
+        title: "Average Salary, Male vs Female (by Faculty)",
         subtitle: "Reference line shows equality. Points are scaled by faculty size.",
         processor: salary_mf_notnull,
 
@@ -334,6 +334,6 @@
 
   $("#facultyselector").change(search.faculty_filter);
 
-  $("#campuses").change(search.campus_filter);
+  $("#searchform .campuses").change(search.campus_filter);
 
 }).call(this);
