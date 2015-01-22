@@ -229,10 +229,10 @@ uby_charts = ( (self) ->
         (d for d in data when d.avg_salary_m isnt "NULL" and d.avg_salary_f isnt "NULL")
     
     click_dept = (d) ->
-        window.open "#{SALARYDB}/search/?department_id=#{d.dept_id}"
+        window.open "#{SALARYDB}/search/?department_id=#{encodeURIComponent(d.dept_id)}"
     
     click_fac = (d) ->
-        window.open "#{SALARYDB}/search/?faculty_id=#{d.faculty_id}"
+        window.open "#{SALARYDB}/search/?faculty_id=#{encodeURIComponent(d.faculty_id)}"
     
     self.departments =
         gender_salary: chart_maker(
