@@ -1,9 +1,9 @@
 # DEPARTMENTS REPORT
 select
-	d.id as dept_id,
-	d.name as dept_name,
+    d.id as dept_id,
+    d.name as dept_name,
     d.campus as dept_campus,
-	sum(e.remuneration) as salary_total,
+    sum(e.remuneration) as salary_total,
     avg(e.remuneration) as avg_salary,
     avg(if(e.gender="m", e.remuneration, null)) as avg_salary_m,
     avg(if(e.gender="f", e.remuneration, null)) as avg_salary_f,
@@ -17,9 +17,9 @@ select
     count(nullif(e.gender, "F")) as male_count,
     sum(isnull(e.gender)) as no_gender_count # Use SUM because ISNULL returns 1 or 0, and COUNT will still count zeros.
 from
-	salarydb.main_employee as e
+    salarydb.main_employee as e
 join salarydb.main_department d on (e.department_id = d.id)
 group by
-	d.id
+    d.id
 order by
-	salary_total desc
+    salary_total desc
