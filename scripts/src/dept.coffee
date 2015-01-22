@@ -9,9 +9,6 @@ if not debug
 
 
 search = ( (self) ->
-    # This self-executing anonymous function allows for private and
-    # public vars on the `search` object, which is passed in and
-    # returned as `self`.
     
     # Dict of test predicates to apply to charts
     predicates = {}
