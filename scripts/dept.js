@@ -224,10 +224,10 @@ by Ben Cook / The Ubyssey
       return _results;
     };
     click_dept = function(d) {
-      return window.open("" + SALARYDB + "/search/?department_id=" + d.dept_id);
+      return window.open("" + SALARYDB + "/search/?department_id=" + (encodeURIComponent(d.dept_id)));
     };
     click_fac = function(d) {
-      return window.open("" + SALARYDB + "/search/?faculty_id=" + d.faculty_id);
+      return window.open("" + SALARYDB + "/search/?faculty_id=" + (encodeURIComponent(d.faculty_id)));
     };
     self.departments = {
       gender_salary: chart_maker({
