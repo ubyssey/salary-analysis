@@ -29,6 +29,11 @@ and then navigating to `localhost:8008/charts/departments.html` or whichever cha
 `$ grunt build` will build all the source, uglifying, minifying, and combining files together --
 see `Gruntfile.coffee` for specifics.
 
+**Debug mode** is controlled by the `debug` var at the top of `dept.coffee`. When debug is on,
+some things get printed to the console, like search results, and SVG chart elements get tagged
+with unique IDs so they can more easily be exported to Illustrator and co. Debug also shows
+department IDs in the tooltips.
+
 
 ### License for [d3-tip](https://github.com/Caged/d3-tip)
 
