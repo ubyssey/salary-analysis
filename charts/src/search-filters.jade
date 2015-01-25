@@ -1,0 +1,14 @@
+mixin search_filters(filter_campuses)        
+    form#chartsearchform
+        label Search:
+        input(type="text").searchbar
+        select#facultyselector
+    
+        if filter_campuses
+            ul.campuses
+                li
+                    input(type="checkbox" name="campus-van" checked)#checkbox-van
+                    label(for="checkbox-van") Vancouver
+                li
+                    input(type="checkbox" name="campus-oka" checked)#checkbox-oka
+                    label(for="checkbox-oka") Okanagan
