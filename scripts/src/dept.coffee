@@ -97,10 +97,10 @@ chart_maker = (params) =>
             $(parentdiv).append $("<h3/>").text params.subtitle
         
         margin =
-            top: 20
+            top: 10
             right: 20
             bottom: 30
-            left: 50
+            left: 60
         width = $(parentdiv).width() - margin.left - margin.right
         height = (params.height or 500) - margin.top - margin.bottom
     
@@ -241,8 +241,8 @@ uby_charts = ( (self) ->
             label_y: "FEMALE - Average Salary"
             fmt_x: "$"
             fmt_y: "$"
-            title: "Average Salary, Male vs Female (by Department)"
-            subtitle: "Reference line shows equality. Points are scaled by department size."
+            #title: "Average Salary, Male vs Female (by Department)"
+            #subtitle: "Reference line shows equality. Points are scaled by department size."
             processor: salary_mf_notnull
             tip: dept_tip
             click: click_dept
@@ -257,7 +257,7 @@ uby_charts = ( (self) ->
             label_y: "Avg Expenses"
             fmt_x: "$"
             fmt_y: "$"
-            title: "Avg Salary vs Expenses (by Department)"
+            #title: "Avg Salary vs Expenses (by Department)"
             tip: dept_tip
             click: click_dept
         )
@@ -274,8 +274,8 @@ uby_charts = ( (self) ->
             label_y: "FEMALE - Average Salary"
             fmt_x: "$"
             fmt_y: "$"
-            title: "Average Salary, Male vs Female (by Faculty)"
-            subtitle: "Reference line shows equality. Points are scaled by faculty size."
+            #title: "Average Salary, Male vs Female (by Faculty)"
+            #subtitle: "Reference line shows equality. Points are scaled by faculty size."
             processor: salary_mf_notnull
             ###
             processor: (data) ->
@@ -301,13 +301,13 @@ uby_charts = ( (self) ->
 
 # Setup all charts, and then wait for data
 uby_charts.departments.gender_salary "#deptchart"
-uby_charts.departments.salary_expenses "#expenseschart"
-uby_charts.faculties.gender_salary "#facchart"
+# uby_charts.departments.salary_expenses "#expenseschart"
+# uby_charts.faculties.gender_salary "#facchart"
 
 # Fetch data sources and finish drawing each chart
 # based on data_hooks callbacks
 fetch_data d3.csv, "../data/departments.csv", "dept"
-fetch_data d3.csv, "../data/faculties.csv", "fac"
+# fetch_data d3.csv, "../data/faculties.csv", "fac"
 # TODO change once uploaded to ubyssey wp site
 
 
