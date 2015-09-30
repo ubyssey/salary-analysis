@@ -123,10 +123,10 @@ by Ben Cook / The Ubyssey
           $(parentdiv).append($("<h3/>").text(params.subtitle));
         }
         margin = {
-          top: 20,
+          top: 10,
           right: 20,
           bottom: 30,
-          left: 50
+          left: 60
         };
         width = $(parentdiv).width() - margin.left - margin.right;
         height = (params.height || 500) - margin.top - margin.bottom;
@@ -245,8 +245,6 @@ by Ben Cook / The Ubyssey
         label_y: "FEMALE - Average Salary",
         fmt_x: "$",
         fmt_y: "$",
-        title: "Average Salary, Male vs Female (by Department)",
-        subtitle: "Reference line shows equality. Points are scaled by department size.",
         processor: salary_mf_notnull,
         tip: dept_tip,
         click: click_dept,
@@ -264,7 +262,6 @@ by Ben Cook / The Ubyssey
         label_y: "Avg Expenses",
         fmt_x: "$",
         fmt_y: "$",
-        title: "Avg Salary vs Expenses (by Department)",
         tip: dept_tip,
         click: click_dept
       })
@@ -287,8 +284,6 @@ by Ben Cook / The Ubyssey
         label_y: "FEMALE - Average Salary",
         fmt_x: "$",
         fmt_y: "$",
-        title: "Average Salary, Male vs Female (by Faculty)",
-        subtitle: "Reference line shows equality. Points are scaled by faculty size.",
         processor: salary_mf_notnull,
 
         /*
@@ -314,13 +309,7 @@ by Ben Cook / The Ubyssey
 
   uby_charts.departments.gender_salary("#deptchart");
 
-  uby_charts.departments.salary_expenses("#expenseschart");
-
-  uby_charts.faculties.gender_salary("#facchart");
-
   fetch_data(d3.csv, "../data/departments.csv", "dept");
-
-  fetch_data(d3.csv, "../data/faculties.csv", "fac");
 
   d3.csv("../data/faculties_list.csv", function(err, data) {
     var d, f, _i, _len;
